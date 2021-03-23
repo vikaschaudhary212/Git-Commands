@@ -1,0 +1,41 @@
+ALTER procedure [dbo].[sp_purchaseDetails]
+(@Purchase_id int=null,
+@Supplier_id int=null,
+@Med_id int=null,
+@Quantity varchar(50)=null,
+@Purchase_price varchar(50)=null,
+@Sale_price varchar(50)=null,
+@Mfu_date datetime=null,
+@Expiry_date datetime=null,
+@Total varchar(50)=null,
+@flag varchar(10)
+)
+as 
+begin
+if(@flag='insert')
+begin
+insert into TblPurchaseDetails(Supplier_id,Med_id,Quantity,Purchase_price,Sale_price,Mfu_date,Expiry_date,Total)
+values                             (@Supplier_id,@Med_id, @Quantity,@Purchase_price,@Sale_price,@Mfu_date,@Expiry_date,@Total);
+end
+if(@flag='select')
+begin
+
+select c.Supplier_name, b.Med_name, a.*  from TblPurchaseDetails a left join TblMedicineDetails b on a.Med_id=b.Med_id left join TblSupplierDetails c on a.Supplier_id=c.Supplier_id 
+end
+
+if(@flag='update')
+begin
+update  TblPurchaseDetails
+set Quantity=@Quantity,Purchase_price=@Purchase_price,Sale_price=@Sale_price,Mfu_date=@Mfu_date,Expiry_date=@Expiry_date,Total=@Total where Purchase_id=@Purchase_id
+end
+else if(@flag='delete')
+begin
+delete from TblPurchaseDetails where Purchase_id=@Purchase_id
+end
+
+if(@flag='select1')
+begin
+
+select  '0' as 'Med_id','Select Medicine Name' as  'Med_name' union all select Med_id,Med_name from TblMedicineDetails
+end
+end
